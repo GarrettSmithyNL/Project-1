@@ -29,6 +29,10 @@ def formatPercent(num, roundLen=2):
     return formatFloat(num, roundLen) + "%"
 
 
+def formatPhone(phone):
+    return "(" + phone[0:3] + ")" + phone[3:6] + "-" + phone[6:10]
+
+
 def dateShort(pDate):
     return pDate.strftime(DATE_SHORT_FORMATTING)
 
