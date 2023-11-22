@@ -60,14 +60,22 @@ def validatePostalCode(value):
     if len(value) != 6:
         print("Value is not the correct length(6).")
         return False
-    if not value[0].isdigit() or not value[2].isdigit() or not value[4].isdigit():
+    if not value[1].isdigit() or not value[3].isdigit() or not value[5].isdigit():
         print("Value does not follow X0X0X0.")
         return False
-    if not value[1].isalpha() or not value[3].isalpha() or not value[5].isalpha():
+    if not value[0].isalpha() or not value[2].isalpha() or not value[4].isalpha():
         print("Value does not follow X0X0X0.")
         return False
     else:
         return True
+
+
+def validateYesNo(value):
+    if value.upper() == "Y" or value.upper() == "N":
+        return True
+    else:
+        print("Value is not Y or N.")
+        return False
 
 
 def validateShortDate(value):  # YYYY-MM-DD
