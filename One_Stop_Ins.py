@@ -49,8 +49,7 @@ def printClaims():
     Otherwise, it prints the claim number, claim date, and claim amount for each claim.
     """
     if claims == "NONE":
-        print("No claims.")
-        return
+        print(f"No claims.")
     else:
         print(f"Claim #  Claim Date        Amount")
         print(f"---------------------------------")
@@ -69,11 +68,12 @@ def printRecipt():
     """
 
     fullName = firstName + " " + lastName
-    bottomAddress = city + ", " + province + " " + postalCode
+    bottomAddress = city + ", " + province + " " + postalCode.upper()
 
     print(f"----------------------------------------")
     print(f"       One Stop Insurance Company       ")
     print(f"----------------------------------------")
+    print(f" Date:{formater.dateMedium(TODAY_DATE):>33s}")
     print(f" Name:{fullName:>33s}")
     print(f" Address:{address:>30s}")
     print(f" {bottomAddress:>38s}")
@@ -83,8 +83,12 @@ def printRecipt():
     print(f" Payment Option:{paymentOption.title():>23s}")
     print(f" Number of cars:{numCars:>23d}")
     print(f"----------------------------------------")
-    print(f" First Car Coverage:{formater.formatMoney(BASIC_PREMIUM):>19s}")
-    print(f" Extra Car Coverage:{formater.formatMoney(extraCarCost):>19s}")
+    if numCars > 1:
+        print(
+            f" First Car Coverage:{formater.formatMoney(BASIC_PREMIUM):>19s}")
+        print(f" Extra Car Coverage:{formater.formatMoney(extraCarCost):>19s}")
+    else:
+        print(f" Car Coverage:{formater.formatMoney(BASIC_PREMIUM):>25s}")
     if extraLiability == "Y":
         print(
             f" Extra Liability Coverage:{formater.formatMoney(extraLiabCost):>13s}")
@@ -112,7 +116,7 @@ def printRecipt():
         print(f"----------------------------------------")
         print(f" Payment Amount:{formater.formatMoney(payments):>23s}")
         print(
-            f" Date of first Payment:{formater.dateMedium(firstPaymentDate):>14s}")
+            f" Date of first Payment:{formater.dateMedium(firstPaymentDate):>16s}")
         print(f"----------------------------------------")
         print(f"      Thank you for your business!      ")
 
@@ -156,7 +160,7 @@ while True:
 
     while True:
         phoneNumber = input("Please enter your phone number(9999999999): ")
-        if validator.validateString(phoneNumber):
+        if validator.validatePhone(phoneNumber):
             break
 
     while True:
@@ -245,7 +249,7 @@ while True:
         print("Example: 1999-01-01 1000, 1999-01-02 200, .... ")
         print("If you have no claims, enter None.")
         claims = input("Please enter previous claims: ").upper()
-        if claims == "":
+        if claims != "NONE" or claims == "":
             print("Please enter a valid input.")
         elif claims == "NONE":
             break
@@ -267,9 +271,13 @@ while True:
     """
     These are the calculations for the insurance policy.
     """
-    extraCarCost = (numCars * BASIC_PREMIUM) * DISCOUNT_ADD_CAR
-    extaCost = extraLiabCost + glassCovCost + loanerCarCost
-    insuraceCost = BASIC_PREMIUM + extraCarCost + extaCost
+
+    extraCost = extraLiabCost + glassCovCost + loanerCarCost
+    if numCars > 1:
+        extraCarCost = (numCars * BASIC_PREMIUM) * DISCOUNT_ADD_CAR
+        insuraceCost = BASIC_PREMIUM + extraCarCost + extraCost
+    else:
+        insuraceCost = BASIC_PREMIUM + extraCost
     hstCost = insuraceCost * HST_RATE
     totalCost = insuraceCost + hstCost
 
