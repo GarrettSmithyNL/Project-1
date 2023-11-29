@@ -183,7 +183,7 @@ def validateShortDate(value):
         return False
     else:
         try:
-            datetime.datetime.strftime(value, "%Y-%m-%d")
+            datetime.datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
             print("Value is not a valid date.")
             return False

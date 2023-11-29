@@ -67,7 +67,7 @@ def printRecipt():
     information based on the payment option chosen.
     """
 
-    fullName = firstName + " " + lastName
+    fullName = firstName.title() + " " + lastName.title()
     bottomAddress = city + ", " + province + " " + postalCode.upper()
 
     print(f"----------------------------------------")
@@ -218,19 +218,18 @@ while True:
             "Please enter your payment option (Full, Monthly, Down Payment): "
         ).upper()
 
-        if paymentOption == "":
-            print("Please enter a valid input.")
-        elif paymentOption in PAYMENT_OPTIONS[2]:
-            while True:
-                downPayment = input("Please enter your down payment: ")
-                if validator.validatefloat(downPayment):
-                    downPayment = float(downPayment)
-                    break
-            break
-        elif paymentOption in PAYMENT_OPTIONS:
-            break
-        else:
-            print("Please enter a valid input.")
+        if validator.validateString(paymentOption):
+            if paymentOption == PAYMENT_OPTIONS[2]:
+                while True:
+                    downPayment = input("Please enter your down payment: ")
+                    if validator.validatefloat(downPayment):
+                        downPayment = float(downPayment)
+                        break
+                break
+            elif paymentOption in PAYMENT_OPTIONS:
+                break
+            else:
+                print("Please enter a valid input.")
 
     """
     This is the gathering of the previous claims for the insurance policy. 
@@ -249,22 +248,25 @@ while True:
         print("Example: 1999-01-01 1000, 1999-01-02 200, .... ")
         print("If you have no claims, enter None.")
         claims = input("Please enter previous claims: ").upper()
-        if claims != "NONE" or claims == "":
-            print("Please enter a valid input.")
-        elif claims == "NONE":
-            break
-        claimPairs = claims.split(", ")
-        for claims in claimPairs:
-            temp = claims.split(" ")
-            claimDates.append(datetime.datetime.strptime(temp[0], "%Y-%m-%d"))
-            claimAmounts.append(temp[1])
-        valid = True
-        for i in range(len(claimDates)):
-            if not validator.validateShortDate(claimDates[i]) or not validator.validatefloat(claimAmounts[i]):
-                valid = False
-                temp.clear()
-                claimAmounts.clear()
-                claimDates.clear()
+        if validator.validateString(claims):
+            valid = True
+            if claims == "NONE":
+                break
+            claimPairs = claims.split(",")
+            claimPairs = [x.strip() for x in claimPairs]
+            for claims in claimPairs:
+                temp = claims.split(" ")
+                if len(temp) == 2 and validator.validateShortDate(temp[0].strip()) and validator.validatefloat(temp[1].strip()):
+                    claimDates.append(
+                        datetime.datetime.strptime(temp[0].strip(), "%Y-%m-%d"))
+                    claimAmounts.append(temp[1].strip())
+                else:
+                    print("Please enter a valid input.")
+                    valid = False
+                    claimAmounts.clear()
+                    claimDates.clear()
+                    break
+
         if valid:
             break
 
